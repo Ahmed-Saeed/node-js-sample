@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodejs
 /*
 Automatically grade files for the presence of specified HTML tags/attributes.
 Uses commander.js and cheerio. Teaches command line application development
@@ -62,32 +62,7 @@ var clone = function(fn) {
     return fn.bind({});
 };
 
-if(require.main == module) {
-    program
-        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <URL>', 'URL of web page')
-        .parse(process.argv);
-    if (program.url){
-      rest.get(program.url).on('complete', function(result) {
-      if (result instanceof Error) {
-        sys.puts('Error: ' + result.message);
-        this.retry(5000); // try again after 5 sec
-      } else {
-        fs.writeFile(__dirname + '/' + HTMLFILE_DEFAULT, result, function(err) {
-        if (err) throw err;
-        console.log('File Downloaded and saved to: ' + __dirname);
-        });
-        var checkJson = checkHtmlFile(HTMLFILE_DEFAULT, program.checks);
-        var outJson = JSON.stringify(checkJson, null, 4);
-        console.log(outJson);
-      }
-    }else{
-      var checkJson = checkHtmlFile(program.file, program.checks);
-      var outJson = JSON.stringify(checkJson, null, 4);
-      console.log(outJson);
-    }
-    
-} else {
-    exports.checkHtmlFile = checkHtmlFile;
-}
+var checkJson = checkHtmlFile(HTMLFILE_DEFAULT, CHECKSFILE_DEFAULT);
+var outJson = JSON.stringify(checkJson, null, 4);
+console.log(outJson);
+   
